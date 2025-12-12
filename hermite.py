@@ -8,7 +8,7 @@ def hermite_poly(n):
         n (int): maximum degree of polynomial
 
     Returns:
-        ndarray: 2d matrix with polynomials. Ensure that they are reversed before using
+        ndarray: 2d matrix with polynomials. Ensure that coefficients are reversed before using
     """
     __a=np.zeros((n,n))
     __a[0,0] = 1

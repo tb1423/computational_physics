@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from random import randint
 
 from hermite import hermite_poly
 
@@ -31,10 +32,37 @@ def d2f_dx2(f,x):
 
 
 def E_l(x,n):
-    _x = x[:-2]
+    _x = x[2:]
     return 0.5*_x**2 - 0.5*d2f_dx2(psi_func(x,n),x) / psi_func(_x,n)
 
-v = np.linspace(0,3,100000)
 
-plt.plot(v[:-2], E_l(v,5))
+
+NO=1000
+
+v = np.linspace(-5,5,NO)
+
+def rho_dist(x,n,dom,N=1000):
+    _rho_integrate = 0.
+    _range = np.linspace(dom[0],dom[1],N)
+    _psi_sq = psi_func(x,n)**2
+    for r in _range:
+        _rho_integrate += (1/N)*psi_func(r,n)**2
+    return _psi_sq / _rho_integrate
+
+def rho_cum(p,N=1000):
+    _cdf = [ ]
+    _acc = 0.
+    for val in p:
+        _acc += val/N
+        _cdf.append(_acc)
+    return np.array(_cdf)
+
+rho = rho_dist(v,4,[-5,5],NO)
+plt.plot(v, rho)
+plt.show()
+
+rhoc = rho_cum(rho,NO)
+
+print(rhoc)
+plt.plot(v, rhoc)
 plt.show()
