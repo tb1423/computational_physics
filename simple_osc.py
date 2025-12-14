@@ -12,9 +12,10 @@ def psi_func(x,n):
         n (int): Index begins at 0
     """
     _hermite = 0.
-    a_n = hermite_poly(n+2)
+    a_n = hermite_poly(n+5)
+    
 
-    for k, a_k in enumerate(a_n[n][::-1]):
+    for k, a_k in enumerate(a_n[n]):
         _hermite += a_k * x**k
 
     return _hermite * np.exp(-0.5*x**2)
@@ -31,7 +32,7 @@ def local_energy(x,n):
     """
     psi = psi_func(x, n)
     psi2 = d2f_dx2(psi, x)
-    xi = x[:-2]
+    xi = x[2:]
     return 0.5*xi**2 - 0.5*psi2/psi[:-2]
 
 def rho_particular(x,n,N):
@@ -47,6 +48,6 @@ def rho_cumulative(p,N):
     for i, _ in enumerate(p):
         if i == 0:
             continue
-        _acc += 5. * ( p[i]+p[i-1] ) / N
+        _acc += .5 * ( p[i]+p[i-1] ) / N
         _cdf.append(_acc)
     return np.array(_cdf)

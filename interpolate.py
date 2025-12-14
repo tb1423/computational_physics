@@ -24,8 +24,7 @@ def interplt(f_val_un, x_i_di, f_i_di):
 
             return x_i + (f_val_un - f_i) * (x_ip1 - x_i) / (f_ip1 - f_i) # + (1/NO)
 
-        ## Return the same inputted if interpolation does not work
-    print("Interpolation error")
+    ## Return the same inputted if interpolation does not work
     return f_val_un
 
 def intpt_df(x_i, f_i, r_i):
