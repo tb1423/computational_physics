@@ -2,6 +2,7 @@
 
 import numpy as np
 
+
 def hermite_poly(n):
     """
     e.g., H_3 = np.poly1d(a[3][::-1])

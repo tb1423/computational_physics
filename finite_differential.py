@@ -1,4 +1,7 @@
+
+
 import numpy as np
+
 
 def df_dx(f,x):
     """Take the first derivative of a function f wrtx.
@@ -14,6 +17,7 @@ def df_dx(f,x):
     for n in range(len(x)-1):
         f1[n] = (f[n+1]-f[n])/(x[n+1]-x[n])
     return f1
+
 
 def d2f_dx2(f,x):
     """Take the second derivative of a function f wrtx.
