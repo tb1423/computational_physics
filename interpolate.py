@@ -46,3 +46,16 @@ def intpt_df(x_i, f_i, r_i):
         v_i.append(interplt(_f_val, x_i, r_i))
 
     return np.array(v_i)
+
+
+def retn_df(rho,x,y,z,N,scalar=1.01):
+
+    cmpsn_func = scalar*np.max(rho)
+
+    p_i = np.random.uniform(x[0],cmpsn_func,N)
+    q_i = np.random.uniform(y[0],cmpsn_func,N)
+    r_i = np.random.uniform(z[0],cmpsn_func,N)
+
+    for i, _ in enumerate(x):
+        if rho(x,y,z) > p_i[i] and rho(x,y,z) < q_i[i] and rho(x,y,z) < r_i[i]:
+            yield [x,y,z]
