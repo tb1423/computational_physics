@@ -1,18 +1,18 @@
-"""  """
+"""- main.py -"""
 
 import numpy as np
 import matplotlib.pyplot as plt
-from interpolate import retn_df
-import three_osc as to
+from interpolate import rejection_df_3d
+import atomic_simulator as to
 
 
 ## 3D hydrogen atom parameters
-N_S     =   100
-NO_PTS  =   10000
+N_S     =   int(1E2)
+NO_PTS  =   int(2E2)
 X_MIN   =  -3
 X_MAX   =   3
-C       =   1.1
-
+## Temporary parameter 'theta'
+T = 1.
 
 ## Linspaces
 x_space = np.linspace(X_MIN,X_MAX,N_S)
@@ -21,30 +21,38 @@ z_space = np.linspace(X_MIN,X_MAX,N_S)
 
 
 ## Uniform distributions for 3 DoF
-x_i = np.random.uniform(X_MIN,X_MAX,NO_PTS)
-y_i = np.random.uniform(X_MIN,X_MAX,NO_PTS)
-z_i = np.random.uniform(X_MIN,X_MAX,NO_PTS)
+#x_i = np.random.uniform(X_MIN,X_MAX,NO_PTS)
+#y_i = np.random.uniform(X_MIN,X_MAX,NO_PTS)
+#z_i = np.random.uniform(X_MIN,X_MAX,NO_PTS)
 
 
-## Temporary parameter 'theta'
-T = 1.
+
 #E_l = to.local_energy(x_space,y_space,z_space,T)
 
 ##  Calculate energy distribution using eq.3
 rho_pdf = to.rho_particular_3d(x_space,y_space,z_space,T)
 plt.imshow(rho_pdf[:,:,5])
 plt.colorbar()
-plt.show()
+plt.close()
 
 
 ## rejection pts uniform distribution
+accepted = rejection_df_3d(rho_pdf, x_space, y_space, z_space, NO_PTS, NO_PTS)
 
+plt.hist2d(accepted[:,0],accepted[:,1],bins=20)
 
+plt.close()
 
-accepted = list(retn_df(rho_pdf,x_i,y_i,z_i,NO_PTS))
+loc_enrg = []
 
-print(accepted)
+ints = to.local_energy_3d(x_space,y_space,z_space,T)
 
+for i in accepted:
+    loc_enrg.append(to.local_nerg(i[0],i[1],i[2],ints[0],ints[1],ints[2],ints[3],ints[4]))
+
+H_mean = np.sum(np.array(loc_enrg)) / np.size(loc_enrg)
+
+print(H_mean)
 ## Generagte local energy distribution
 
 ###  Interpolate cdf inverse

@@ -1,4 +1,4 @@
-
+"""- ansatz.py -"""
 
 import numpy as np
 from hermite import hermite_poly

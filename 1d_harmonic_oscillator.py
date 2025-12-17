@@ -3,13 +3,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from interpolate import intpt_df
-import simple_osc as so
+import oscillator as so
 
 
 ## 1D Harmonic Oscillator Parameters
-N_S     =   1000
-X_MIN   =  -50
-X_MAX   =   50
+N_S     =   100
+X_MIN   =  -3
+X_MAX   =   3
 N_LIM   =   20
 #N_MODE  =   3
 

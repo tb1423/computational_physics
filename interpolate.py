@@ -1,3 +1,5 @@
+"""- interpolate.py -"""
+
 import numpy as np
 
 
@@ -48,14 +50,72 @@ def intpt_df(x_i, f_i, r_i):
     return np.array(v_i)
 
 
-def retn_df(rho,x,y,z,N,scalar=1.01):
+def interplt_3d_vec(xg, yg, zg, X, Y, Z, rho):
+    """_summary_
 
-    cmpsn_func = scalar*np.max(rho)
+    Args:
+        xg (_type_): _description_
+        yg (_type_): _description_
+        zg (_type_): _description_
+        X (_type_): _description_
+        Y (_type_): _description_
+        Z (_type_): _description_
+        rho (_type_): _description_
 
-    p_i = np.random.uniform(x[0],cmpsn_func,N)
-    q_i = np.random.uniform(y[0],cmpsn_func,N)
-    r_i = np.random.uniform(z[0],cmpsn_func,N)
+    Returns:
+        _type_: _description_
+    """
+    Nx, Ny, Nz = rho.shape
 
-    for i, _ in enumerate(x):
-        if rho(x,y,z) > p_i[i] and rho(x,y,z) < q_i[i] and rho(x,y,z) < r_i[i]:
-            yield [x,y,z]
+    i = np.searchsorted(xg, X, side='right'); i0 = np.clip(i-1, 0, Nx-2)
+    j = np.searchsorted(yg, Y, side='right'); j0 = np.clip(j-1, 0, Ny-2)
+    k = np.searchsorted(zg, Z, side='right'); k0 = np.clip(k-1, 0, Nz-2)
+
+    tx = (X - xg[i0]) / (xg[i0+1] - xg[i0])
+    ty = (Y - yg[j0]) / (yg[j0+1] - yg[j0])
+    tz = (Z - zg[k0]) / (zg[k0+1] - zg[k0])
+
+    f00 = rho[i0, j0, k0]*(1-tx) + rho[i0+1, j0, k0]*tx
+    fx0 = rho[i0, j0+1, k0]*(1-tx) + rho[i0+1, j0+1, k0]*tx
+    f0y = rho[i0, j0, k0+1]*(1-tx) + rho[i0+1, j0, k0+1]*tx
+    fxy = rho[i0, j0+1, k0+1]*(1-tx) + rho[i0+1, j0+1, k0+1]*tx
+
+    f0 = f00*(1-ty) + fx0*ty
+    f1 = f0y*(1-ty) + fxy*ty
+    return f0*(1-tz) + f1*tz
+
+def rejection_df_3d(rho, x, y, z, n, no_pts, scalar=1.05, rng=None):
+    """Utilises the rejection method to generate a distribution function
+        with the same topology as rho. See 7.3 in notes for theory.
+
+    Args:
+        rho (_type_): _description_
+        x (_type_): _description_
+        y (_type_): _description_
+        z (_type_): _description_
+        N (_type_): _description_
+        scalar (float, optional): _description_. Defaults to 1.05.
+        batch (int, optional): _description_. Defaults to 10000.
+        rng (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        _type_: _description_
+    """
+    if rng is None:
+        rng = np.random.default_rng()
+
+    cmpsn_fnc = scalar * np.max(rho)
+
+    out = []
+    while len(out) < n:
+        x_c = rng.uniform(x[0], x[-1], no_pts)
+        y_c = rng.uniform(y[0], y[-1], no_pts)
+        z_c = rng.uniform(z[0], z[-1], no_pts)
+        f_c = interplt_3d_vec(x, y, z, x_c, y_c, z_c, rho)
+        ufm = rng.random(no_pts)
+        keep = ufm <= f_c / cmpsn_fnc
+
+        if np.any(keep):
+            out.append(np.stack([x_c[keep], y_c[keep], z_c[keep]], axis=1))
+
+    return np.concatenate(out, axis=0)
