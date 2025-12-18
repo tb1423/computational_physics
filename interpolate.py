@@ -3,7 +3,7 @@
 import numpy as np
 
 
-def interplt(f_val_un, x_i_di, f_i_di):
+def inv_interplt(f_val_un, x_i_di, f_i_di):
     """Perform linear interpolation on a function.
         This must be a bijective function where df/dx > 0 for all x in domain.
 
@@ -29,6 +29,24 @@ def interplt(f_val_un, x_i_di, f_i_di):
     ## Return the same inputted if interpolation does not work
     return f_val_un
 
+def lin_interplt(x_val, x_grid, f_grid):
+    """
+    Linear interpolation of f at x_val given samples (x_grid, f_grid).
+    Clamps to endpoints if x_val lies outside the grid.
+    """
+    xg = np.asarray(x_grid, dtype=float)
+    fg = np.asarray(f_grid, dtype=float)
+    i = np.searchsorted(xg, x_val, side='left')
+
+    if i <= 0:
+        return float(fg[0])
+    if i >= len(xg):
+        return float(fg[-1])
+
+    x0, x1 = xg[i-1], xg[i]
+    f0, f1 = fg[i-1], fg[i]
+    t = (x_val - x0) / (x1 - x0)
+    return float(f0 + t * (f1 - f0))
 
 def intpt_df(x_i, f_i, r_i):
     """Interpolate arbitrary value x_i from a specified empirical function (r_i, f_i).
@@ -45,7 +63,7 @@ def intpt_df(x_i, f_i, r_i):
     v_i = []
 
     for _f_val in f_i:
-        v_i.append(interplt(_f_val, x_i, r_i))
+        v_i.append(inv_interplt(_f_val, x_i, r_i))
 
     return np.array(v_i)
 
