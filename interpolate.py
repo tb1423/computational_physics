@@ -4,7 +4,7 @@ import numpy as np
 
 
 def inv_interplt(f_val_un, x_i_di, f_i_di):
-    """Perform linear interpolation on a function.
+    """Perform linear interpolation on an inverted function.
         This must be a bijective function where df/dx > 0 for all x in domain.
 
     Args:
@@ -93,14 +93,14 @@ def interplt_3d_vec(xg, yg, zg, X, Y, Z, rho):
     ty = (Y - yg[j0]) / (yg[j0+1] - yg[j0])
     tz = (Z - zg[k0]) / (zg[k0+1] - zg[k0])
 
-    f00 = rho[i0, j0, k0]*(1-tx) + rho[i0+1, j0, k0]*tx
-    fx0 = rho[i0, j0+1, k0]*(1-tx) + rho[i0+1, j0+1, k0]*tx
-    f0y = rho[i0, j0, k0+1]*(1-tx) + rho[i0+1, j0, k0+1]*tx
-    fxy = rho[i0, j0+1, k0+1]*(1-tx) + rho[i0+1, j0+1, k0+1]*tx
+    V00 = rho[i0, j0, k0]*(1-tx) + rho[i0+1, j0, k0]*tx
+    Vx0 = rho[i0, j0+1, k0]*(1-tx) + rho[i0+1, j0+1, k0]*tx
+    V0y = rho[i0, j0, k0+1]*(1-tx) + rho[i0+1, j0, k0+1]*tx
+    Vxy = rho[i0, j0+1, k0+1]*(1-tx) + rho[i0+1, j0+1, k0+1]*tx
 
-    f0 = f00*(1-ty) + fx0*ty
-    f1 = f0y*(1-ty) + fxy*ty
-    return f0*(1-tz) + f1*tz
+    V0 = V00*(1-ty) + Vx0*ty
+    V1 = V0y*(1-ty) + Vxy*ty
+    return V0*(1-tz) + V1*tz
 
 def rejection_df_3d(rho, x, y, z, n, no_pts, scalar=1.05, rng=None):
     """Utilises the rejection method to generate a distribution function
@@ -137,3 +137,4 @@ def rejection_df_3d(rho, x, y, z, n, no_pts, scalar=1.05, rng=None):
             out.append(np.stack([x_c[keep], y_c[keep], z_c[keep]], axis=1))
 
     return np.concatenate(out, axis=0)
+

@@ -7,8 +7,8 @@ import atomic_simulator as to
 
 
 ## 3D hydrogen atom parameters
-N_S      =   int(1E2)
-NO_PTS   =   int(1E2)
+N_S      =   100
+NO_PTS   =   100
 X_MIN    =  -3
 X_MAX    =   3
 T_MIN    =   0.1
@@ -62,8 +62,3 @@ for _ in range(LOOP_MAX):
 
 print(f'<H> = {H_mean}, T = {T}')
 print(d_th_H)
-#print(H_mean)
-#print(d_th_H)
-
-## Calculate expected energy
-#print(H_mean)

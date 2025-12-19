@@ -21,6 +21,7 @@ def local_energy(x,n):
 
 
 def rho_particular(x,n,N):
+    """ pdf for a 1D harmonic oscillator """
     _rho_integrate = 0.
     _range = np.linspace(np.min(x),np.max(x),N)
     _psi_sq = psi_func_1d(x,n)**2
@@ -29,6 +30,8 @@ def rho_particular(x,n,N):
 
 
 def rho_cumulative(p,N):
+    """ numerically calculated cdf for a 
+    1D harmonic oscillator"""
     _cdf = [ ]
     _acc = 0.
     for i, _ in enumerate(p):
@@ -37,5 +40,3 @@ def rho_cumulative(p,N):
         _acc += .5 * ( p[i]+p[i-1] ) / N
         _cdf.append(_acc)
     return np.array(_cdf)
-
-

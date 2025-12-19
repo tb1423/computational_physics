@@ -7,6 +7,7 @@ from interpolate import interplt_3d_vec, lin_interplt
 
 
 def rho_particular_3d_num(x,y,z,t):
+    """ Numerically calculated pdf """
 
     X, Y, Z = np.meshgrid(x, y, z)
     psi2 = np.abs(psi_func_3d(X, Y, Z, t))**2
@@ -15,6 +16,7 @@ def rho_particular_3d_num(x,y,z,t):
 
 
 def rho_particular_3d(x,y,z,t):
+    """ Analytical pdf function """
 
     X, Y, Z = np.meshgrid(x, y, z)
     r = np.sqrt(X**2+Y**2+Z**2)
@@ -22,6 +24,7 @@ def rho_particular_3d(x,y,z,t):
 
 
 def local_energy_3d(x, y, z, t):
+    """ Generates local energy function in 3 dimensions """
 
     ## Generate meshgrids
     X, Y, Z = np.meshgrid(x, y, z)
@@ -32,7 +35,7 @@ def local_energy_3d(x, y, z, t):
     psi_yy = np.apply_along_axis(lambda a: d2f_dx2(a, y), axis=1, arr=psi)
     psi_zz = np.apply_along_axis(lambda a: d2f_dx2(a, z), axis=2, arr=psi)
 
-    # common interior grids
+    # Truncate (artifact from 2nd derr)
     xi = x[:-2]; yi = y[:-2]; zi = z[:-2]
     psi_int = psi[:-2, :-2, :-2]
     lap_int = psi_xx[:, :-2, :-2] + psi_yy[:-2, :, :-2] + psi_zz[:-2, :-2, :]
@@ -41,6 +44,7 @@ def local_energy_3d(x, y, z, t):
 
 
 def get_local_energy(x0,y0,z0,psi_int,lap_int, xi, yi, zi, eps=1e-12):
+    """ Returns <H> with specific position and ansatz parameters"""
 
     psi_val = float(interplt_3d_vec(xi, yi, zi, [x0], [y0], [z0], psi_int)[0])
     lap_val = float(interplt_3d_vec(xi, yi, zi, [x0], [y0], [z0], lap_int)[0])
@@ -52,6 +56,7 @@ def get_local_energy(x0,y0,z0,psi_int,lap_int, xi, yi, zi, eps=1e-12):
     return -0.5 * (lap_val / psi_val) + V
 
 def del_th_H(r_i,e_l_i,th,th_space):
+    """ Returns the gradient of <H> wrt theta"""
 
     exp_e = np.sum(np.array(e_l_i)) / np.size(e_l_i)
 

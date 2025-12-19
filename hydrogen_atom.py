@@ -7,15 +7,15 @@ import atomic_simulator as to
 
 
 ## 3D hydrogen atom parameters
-N_S      =   int(1E2)
-NO_PTS   =   int(1E2)
+N_S      =   100
+NO_PTS   =   100
 X_MIN    =  -3
 X_MAX    =   3
 T_MIN    =   0.1
 T_MAX    =   2.
 T_RES    =   1000
 LOOP_MAX =   1000
-ALPHA    =   1e-0
+ALPHA    =  -1e1
 
 ## Temporary parameter 'theta'
 T = 1.
@@ -57,7 +57,7 @@ for _ in range(LOOP_MAX):
 
     #print(T)
     print(d_th_H)
-    if np.abs(ALPHA * d_th_H) < 1e-5:
+    if np.abs(ALPHA * d_th_H) < 1e-4:
         break
 
 print(f'<H> = {H_mean}, T = {T}')
